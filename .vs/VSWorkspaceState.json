@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\src",
+    "\\src\\components"
   ],
-  "SelectedNode": "\\D:\\GitKey",
+  "SelectedNode": "\\src\\components\\MainPage.vue",
   "PreviewInSolutionExplorer": false
 }

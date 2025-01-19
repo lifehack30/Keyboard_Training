@@ -47,7 +47,7 @@
 </template>
 
 <script scoped>
-import TheWelcome from './TheWelcome.vue' // Импортируем компонент клавиатуры
+import TheWelcome from './KeyBoard.vue' // Импортируем компонент клавиатуры
 
 export default {
   name: 'TextTrainer',
