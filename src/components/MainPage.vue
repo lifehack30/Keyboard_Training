@@ -83,6 +83,7 @@ export default {
     this.setRandomText()
   },
   methods: {
+   
     // Установка случайного текста
     setRandomText() {
       const randomIndex = Math.floor(Math.random() * this.textBank.length)
@@ -152,6 +153,7 @@ export default {
       this.typingSpeed = Math.floor(this.inputText.length / minutesElapsed || 0)
     }
   }
+  
 }
 </script>
 
