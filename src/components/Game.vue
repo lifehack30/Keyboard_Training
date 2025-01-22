@@ -1,5 +1,9 @@
 <template>
-    <div class="game-container">
+  <div class="background2 fullscreen-div trainer">
+    <div v-if="!isGameStarted" class="container py-10 px-10 mx-0 min-w-full flex flex-col items-center">
+      <button  @click="startGame" class="p-2 border-solid border-4 border-purple-700 rounded-md duration-300 transform hover:shadow-lg background-purple-700 text-white bg-purple-700 hover:bg-purple-900 hover:border-purple-900">Начать игру</button>
+    </div>
+    <div v-else class="game-container">
       <div class="player">
         <div class="word-to-type">
           <span
@@ -17,12 +21,12 @@
           type="text"
           v-model="typedWord"
           @input="checkWord"
-          placeholder="Type the word..."
+          placeholder="Начни писать мой друг..."
         />
       </div>
-  
+
       <div class="game-info">
-        <div class="score">Score: {{ score }}</div>
+        <div class="score">Очки: {{ score }}</div>
         <div class="lives">
           <svg
             v-for="n in lives"
@@ -35,76 +39,99 @@
             />
           </svg>
         </div>
-        <div class="timer">Time Left: {{ timer }}</div>
+        <div class="timer">Времени осталось: {{ timer }}</div>
       </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        words: ["attack", "defend", "enemy", "victory", "hero", "battle"],
-        currentWord: "",
-        typedWord: "",
-        score: 0,
-        lives: 3,
-        timer: 60,
-        timerInterval: null,
-      };
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      isGameStarted: false,
+      words: [
+        "attack", "defend", "enemy", "victory", "hero", "battle", "warrior", "sword",
+        "shield", "castle", "dragon", "magic", "knight", "adventure", "quest", "kingdom",
+        "archer", "treasure", "explore", "goblin", "orc", "wizard", "dungeon", "power",
+        "strength", "challenge", "defeat", "strike", "champion", "bravery", "darkness",
+        "light", "journey", "danger", "fortress", "elixir", "courage", "legend", "mystic",
+        "sorcery", "guardian", "royalty", "archmage", "stealth", "spell", "trap", "phantom",
+        "riddle", "rogue", "bounty", "potion", "healer", "warlock", "fortify", "strategy",
+        "ally", "rescue", "victorious", "fearless", "clash", "realm", "fate", "destiny",
+        "hunter", "relic", "artifact", "summon", "banish", "vanquish", "conquer", "siege",
+        "brutal", "triumph", "glory", "epic", "arena", "villain", "sinister", "noble",
+        "betrayal", "loyalty", "honor", "justice", "revenge", "ambush", "mercenary",
+        "guild", "faction", "elite", "prowess", "ascend", "mighty", "vengeance", "wrath"
+      ],
+      currentWord: "",
+      typedWord: "",
+      score: 0,
+      lives: 3,
+      timer: 60,
+      timerInterval: null,
+    };
+  },
+  methods: {
+    startGame() {
+      this.isGameStarted = true;
+      this.resetGame();
     },
-    created() {
+    setNewWord() {
+      this.currentWord = this.words[Math.floor(Math.random() * this.words.length)];
+      this.typedWord = "";
+    },
+    checkWord() {
+      if (this.typedWord === this.currentWord) {
+        this.score += 1;
+        this.setNewWord();
+      } else if (!this.currentWord.startsWith(this.typedWord)) {
+        this.lives -= 1;
+        this.typedWord = "";
+
+        if (this.lives === 0) {
+          alert("Игра окончена! Твой счет: " + this.score);
+          this.endGame();
+        }
+      }
+    },
+    startTimer() {
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+      }
+      this.timerInterval = setInterval(() => {
+        this.timer -= 1;
+
+        if (this.timer <= 0) {
+          clearInterval(this.timerInterval);
+          alert("Время вышло! Твой счет: " + this.score);
+          this.endGame();
+        }
+      }, 1000);
+    },
+    resetGame() {
+      this.lives = 3;
+      this.score = 0;
+      this.timer = 60;
       this.setNewWord();
       this.startTimer();
     },
-    methods: {
-      setNewWord() {
-        this.currentWord = this.words[Math.floor(Math.random() * this.words.length)];
-        this.typedWord = "";
-      },
-      checkWord() {
-        if (this.typedWord === this.currentWord) {
-          this.score += 1;
-          this.setNewWord();
-        } else if (!this.currentWord.startsWith(this.typedWord)) {
-          this.lives -= 1;
-          this.typedWord = "";
-  
-          if (this.lives === 0) {
-            alert("Game Over!");
-            this.resetGame();
-          }
-        }
-      },
-      startTimer() {
-        if (this.timerInterval) {
-          clearInterval(this.timerInterval);
-        }
-        this.timerInterval = setInterval(() => {
-          this.timer -= 1;
-  
-          if (this.timer <= 0) {
-            clearInterval(this.timerInterval);
-            alert("Time's up! Game Over!");
-            this.resetGame();
-          }
-        }, 1000);
-      },
-      resetGame() {
-        this.lives = 3;
-        this.score = 0;
-        this.timer = 60;
-        this.setNewWord();
-        this.startTimer();
-      },
-    },
-    beforeDestroy() {
+    endGame() {
       clearInterval(this.timerInterval);
+      this.isGameStarted = false;
     },
-  };
-  </script>
+  },
+  beforeDestroy() {
+    clearInterval(this.timerInterval);
+  },
+};
+</script>
   
   <style scoped>
+  .background2 {
+  background-color: #181818; /* Замените на желаемый цвет */
+  /* Например, на всю высоту окна */
+}
   .game-container {
     position: relative;
     width: 100%;
@@ -153,7 +180,13 @@
     top: 10px;
     left: 10px;
   }
-  
+  .fullscreen-div {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+}
   .score,
   .lives,
   .timer {
@@ -166,5 +199,11 @@
     height: 24px;
     fill: red;
   }
+  .trainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
   </style>
   
